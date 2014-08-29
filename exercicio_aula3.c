@@ -1,10 +1,7 @@
 #include <SDL2/SDL.h>
 #define DELAY 500
 
-int vx = { 50, 0, -50, 0};
-int vy = { 0, 50, 0, -50};
-
-void MoveSquare(SDL_Rect* r, int command){
+void MoveSquare(SDL_Rect* r, int command, int*vx, int*vy){
 
 	r->x += vx[command];
 	r->y += vy[command];
@@ -21,9 +18,12 @@ int main(int argc, char* args[])
 	SDL_Rect r1 ={100,50,50,50};
 	SDL_Rect r2 ={500,300,50,50};
 	SDL_Event e;
+	int vx = { 50, 0, -50, 0};
+	int vy = { 0, 50, 0, -50};
+	unsigned long old = SDL_GetTicks();
 
 	
-
+	command =4;
 	old = SDL_GetTicks();
 
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
@@ -40,7 +40,7 @@ int main(int argc, char* args[])
 
 		if(SDL_GetTicks() > old + DELAY){
 
-			MoveSquare(r1,command);
+			MoveSquare(&r1,command%4, vx, vy);
 
 			SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
 			SDL_RenderFillRect(renderer, NULL);
