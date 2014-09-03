@@ -120,7 +120,7 @@ int main(int argc, char* args[]){
 
 		}
 		
-		if(now > old + delay){
+		if(now > old + wait){
 			update_enemies_x(&enemie1);
 			update_enemies_y(&enemie1);
 		}
@@ -128,7 +128,7 @@ int main(int argc, char* args[]){
 		SDL_SetRenderDrawColor(renderer, 0x00,0x00,0x00,0x00);
 		SDL_RenderFillRect(renderer, NULL);
 
-		if(now > old + delay){
+		if(now > old + wait){
 			g_enemy = enemie1;
 			SDL_SetRenderDrawColor(renderer, g_enemy->c->R,g_enemy->c->G,g_enemy->c->B,0x00);
 			SDL_RenderFillRect(renderer, {g_enemy->x, g_enemy->y, g_enemy->width, g_enemy->length});
