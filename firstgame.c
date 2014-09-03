@@ -39,7 +39,7 @@ void update_enemies_x (Square* enemie){
 	if(enemie->x + enemie->c->speed <= 0){
 		enemie-> x = 0;
 		enemie-> c->speed = enemie-> c->speed * (-1);
-		return;
+		return; 
 	}
 
 	enemie->x += enemie->c->speed;
@@ -103,7 +103,7 @@ int main(int argc, char* args[]){
 	Square hero;
 	hero.x = 320; 
 	hero.y = 240; 
-	hero.r = {hero.x, hero.y, TAM_GREEN, TAM_GREEN}; // as green is the all-around color, it's set as the default color
+	hero.c = &green; // as green is the all-around color, it's set as the default color
 
 	//Declaration of Enemies
 	Square enemie1;
