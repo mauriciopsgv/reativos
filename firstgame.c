@@ -156,25 +156,25 @@ int main(int argc, char* args[]){
 			else if( e.type == SDL_KEYDOWN){
 				switch (e.key.keysym.sym){
 					case SDLK_UP:
-						hero.y -= (hero.c.speed * (now-old))/50;
+						hero.y -= ((hero.c.speed * (now-old))/50);
 						break;
 
 					case SDLK_DOWN:
-						hero.y += (hero.c.speed * (now-old))/50;
+						hero.y += ((hero.c.speed * (now-old))/50);
 						break;
 
 					case SDLK_LEFT:
-						hero.x -= (hero.c.speed * (now-old))/50;
+						hero.x -= ((hero.c.speed * (now-old))/50);
 						break;
 
 					case SDLK_RIGHT:
-						hero.x += (hero.c.speed * (now-old)))/50;
+						hero.x += ((hero.c.speed * (now-old))/50);
 						break;
 
 					//case SDLK_SPACE:
 
 				}
-				
+			}
 			
 		}
 
