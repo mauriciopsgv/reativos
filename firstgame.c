@@ -14,6 +14,7 @@
 
 unsigned int now;
 unsigned int old = 0;
+int cont_cores = 4;
 
 typedef struct color{
 	int width;
@@ -89,6 +90,17 @@ void collision_with_walls (Square * enemy){
 	}
 }
 
+void change_color (Square * hero, Color * colors){
+	cont_cores++;
+	hero->x = hero->x - hero->c.width/2;
+	hero->y = hero->y - hero->c.length/2;
+
+	hero->c = colors[cont_cores%3];
+
+	hero->x = hero->x + hero->c.width/2;
+	hero->y = hero->y - hero->c.length/2;
+}
+
 int main(int argc, char* args[]){
 
 	//INICIALIZATION
@@ -99,7 +111,7 @@ int main(int argc, char* args[]){
 	SDL_Event e;
 	SDL_Rect r;
 	int i;
-
+	
 	//Declaration of Colors
 	Color blue;
 	blue.width = B_SIZE;
@@ -171,7 +183,10 @@ int main(int argc, char* args[]){
 						hero.x += ((hero.c.speed * (now-old))/10);
 						break;
 
-					//case SDLK_SPACE:
+					case SDLK_SPACE:
+						change_color(&hero, &colors);
+						break;
+
 
 				}
 			}
