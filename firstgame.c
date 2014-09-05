@@ -170,7 +170,7 @@ int main(int argc, char* args[]){
 		old = SDL_GetTicks();
 
 		for(i=0; i<5; i++){
-			collision_with_walls();
+			collision_with_walls(&enemys[i]);
 		}
 
 	//RENDERIZATION
