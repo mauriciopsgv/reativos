@@ -34,7 +34,7 @@ typedef struct square{
 } Square;
 
 void creating_enemys (Square* enemy, Color* colors){
-	float theta = rand()%360;
+	float theta = rand()%90;
 	int j = rand()%3;
 	enemy->x = rand()% (SCREEN_X+1-colors[j].width);
 	enemy->y = rand()% (SCREEN_Y+1-colors[j].length);
@@ -71,7 +71,7 @@ void collision_with_walls (Square * enemy){
 	}
 
 	if(enemy->x <= 0){
-		enemy-> x = 0;
+		enemy->x = 0;
 		enemy->side_x = 1;
 		return; 
 	}
