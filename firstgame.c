@@ -156,19 +156,19 @@ int main(int argc, char* args[]){
 			else if( e.type == SDL_KEYDOWN){
 				switch (e.key.keysym.sym){
 					case SDLK_UP:
-						hero.y -= hero.c.speed * (now-old);
+						hero.y -= (hero.c.speed * (now-old))/10000;
 						break;
 
 					case SDLK_DOWN:
-						hero.y += hero.c.speed * (now-old);
+						hero.y += (hero.c.speed * (now-old))/10000;
 						break;
 
 					case SDLK_LEFT:
-						hero.x -= hero.c.speed * (now-old);
+						hero.x -= (hero.c.speed * (now-old))/10000;
 						break;
 
 					case SDLK_RIGHT:
-						hero.x += hero.c.speed * (now-old);
+						hero.x += (hero.c.speed * (now-old))/10000;
 						break;
 
 					//case SDLK_SPACE:
@@ -205,6 +205,12 @@ int main(int argc, char* args[]){
 		r.y = hero.y;
 		r.w = hero.c.width;
 		r.h = hero.c.length;
+		SDL_RenderFillRect(renderer, &r);
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
+		r.x = hero.x+5;
+		r.y = hero.y+5;
+		r.w = hero.c.width-5;
+		r.h = hero.c.length-5;
 		SDL_RenderFillRect(renderer, &r);
 
 		SDL_RenderPresent(renderer);
