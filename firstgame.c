@@ -30,12 +30,12 @@ typedef struct square{
 } Square;
 
 void creating_enemies (Square* enemie, Color* color){
-	float angle = rand()%360;
+	float theta = rand()%360;
 	int j = rand()%3;
 	enemie->x = rand()% (641-color->width);
 	enemie->y = rand()% (481-color->length);
-	enemie->direction = {(int*) sin(angle)*100, (int*) cos(angle)*100}; 
-	enemie->c = color;
+	enemie->direction = {(int*) sin(theta)*100, (int*) cos(theta)*100}; 
+	enemie->c = colors[j];
 }
 
 void update_enemies_x (Square* enemie){
@@ -51,7 +51,7 @@ void update_enemies_y (Square* enemie){
 int main(int argc, char* args[]){
 
 	//INICIALIZATION
-	setSeed(time());
+	setSeed(time(NULL));
 	SDL_Init(SDL_INIT_EVERYTHING);
 	SDL_Window* window = SDL_CreateWindow("Squares", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640,480, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, 1, 0);
@@ -93,6 +93,7 @@ int main(int argc, char* args[]){
 	hero.c = &green; // as green is the all-around color, it's set as the default color
 
 	//Declaration of Enemies
+	Square enemie1, enemie2, enemie3, enemie4, enemie5;
 	Square enemies[5]  = {enemie1, enemie2, enemie3, enemie4, enemie5};
 	for(i=0; i<5; i++){
 		creating_enemies( &enemies[i], colors);
@@ -112,7 +113,7 @@ int main(int argc, char* args[]){
 
 		update_enemies_x(&enemie1);
 		update_enemies_y(&enemie1);
-		
+
 
 	//RENDERIZATION
 		SDL_SetRenderDrawColor(renderer, 0x00,0x00,0x00,0x00);
