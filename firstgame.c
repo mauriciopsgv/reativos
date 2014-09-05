@@ -38,8 +38,8 @@ void creating_enemys (Square* enemy, Color* colors){
 	int j = rand()%3;
 	enemy->x = rand()% (SCREEN_X+1-colors[j].width);
 	enemy->y = rand()% (SCREEN_Y+1-colors[j].length);
-	enemy->direction[0] = (cos(theta)*100); 
-	enemy->direction[1] = (sin(theta)*100);
+	enemy->direction[0] = (int) (cos(theta)*100); 
+	enemy->direction[1] = (int) (sin(theta)*100);
 	enemy->side_x = rand()%2;
 	enemy->side_y = rand()%2;
 
@@ -153,28 +153,28 @@ int main(int argc, char* args[]){
 		if(SDL_PollEvent(&e) == 1){
 			if(e.type == SDL_QUIT)
 				break;
-			/*else if( e.type == SDL_KEYDOWN){
+			else if( e.type == SDL_KEYDOWN){
 				switch (e.key.keysym.sym){
 					case SDLK_UP:
-						hero.y -= hero.c.speed * (now-old);
+						hero.y -= (hero.c.speed * (now-old))/50;
 						break;
 
 					case SDLK_DOWN:
-						hero.y += hero.c.speed * (now-old);
+						hero.y += (hero.c.speed * (now-old))/50;
 						break;
 
 					case SDLK_LEFT:
-						hero.x -= hero.c.speed * (now-old);
+						hero.x -= (hero.c.speed * (now-old))/50;
 						break;
 
 					case SDLK_RIGHT:
-						hero.x += hero.c.speed * (now-old);
+						hero.x += (hero.c.speed * (now-old)))/50;
 						break;
 
 					//case SDLK_SPACE:
 
 				}
-				*/
+				
 			
 		}
 
