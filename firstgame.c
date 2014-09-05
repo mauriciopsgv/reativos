@@ -49,27 +49,27 @@ void update_enemys_y (Square* enemy){
 }
 
 void collision_with_walls (Square * enemy){
-	if(enemy->x + enemy->c->width + enemy->c->speed >= 640){
-		enemy-> x = 640 - enemy->c->width;
-		enemy-> c->speed = enemy-> c->speed * (-1);
+	if(enemy->x + enemy->c.width + enemy->c.speed >= 640){
+		enemy->x = 640 - enemy->c.width;
+		enemy->c.speed = enemy->c.speed * (-1);
 		return;
 	}
 
-	if(enemy->x + enemy->c->speed <= 0){
+	if(enemy->x + enemy->c.speed <= 0){
 		enemy-> x = 0;
-		enemy-> c->speed = enemy-> c->speed * (-1);
+		enemy-> c.speed = enemy-> c.speed * (-1);
 		return; 
 	}
 
-	if(enemy-> y + enemy->c->length + enemy->c->speed >= 480){
-		enemy-> y = 480 - enemy->c->length;
-		enemy-> c->speed = enemy-> c->speed * (-1);
+	if(enemy-> y + enemy->c.length + enemy->c.speed >= 480){
+		enemy-> y = 480 - enemy->c.length;
+		enemy-> c.speed = enemy-> c.speed * (-1);
 		return;
 	}
 
-	if(enemy->y + enemy->c->speed <= 0){
+	if(enemy->y + enemy->c.speed <= 0){
 		enemy-> y = 0;
-		enemy-> c->speed = enemy-> c->speed * (-1);
+		enemy-> c.speed = enemy-> c.speed * (-1);
 		return;
 	}
 }
