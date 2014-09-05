@@ -27,6 +27,8 @@ typedef struct color{
 typedef struct square{
 	int x;
 	int y;
+	int side_x;
+	int side_y;
 	int direction[2];
 	struct color c;
 } Square;
@@ -38,49 +40,51 @@ void creating_enemys (Square* enemy, Color* colors){
 	enemy->y = rand()% (SCREEN_Y+1-colors[j].length);
 	enemy->direction[0] = (int) (cos(theta)*100); 
 	enemy->direction[1] = (int) (sin(theta)*100);
+	enemy->side_x = rand()%2;
+	enemy->side_y = rand()%2;
 
 	enemy->c = colors[j];
 	printf("enemy->c.speed : %d\n", enemy->c.speed);
 }
 
 void update_enemys_x (Square* enemy){
-	enemy->x += enemy->c.speed *((enemy->direction[0] * (now - old))/1000000000);
-	printf("now - old = %d\n", now-old);
+	if(enemy->side_x == 1)
+		enemy->x += enemy->c.speed *((enemy->direction[0] * (now - old))/1000000000);
+	else
+		enemy->x -= enemy->c.speed *((enemy->direction[0] * (now - old))/1000000000);
 	return;	
 }
 
 void update_enemys_y (Square* enemy){
-	enemy->y += enemy->c.speed *((enemy->direction[1] * (now - old))/1000000000);
-	printf("now - old = %d\n", now-old);
+	if(enemy->side_y == 1)
+		enemy->y += enemy->c.speed *((enemy->direction[1] * (now - old))/1000000000);
+	else
+		enemy->y -= enemy->c.speed *((enemy->direction[1] * (now - old))/1000000000);
 	return;	
 }
 
 void collision_with_walls (Square * enemy){
 	if(enemy->x + enemy->c.width >= SCREEN_X){
 		enemy->x = SCREEN_X - enemy->c.width;
-		enemy->direction[0] = (enemy->direction[0] * (-1));
-		enemy->x += enemy->c.speed *((enemy->direction[0] * (now - old))/1000000000);
+		enemy->side_x = !enemy->side_x;
 		return;
 	}
 
 	if(enemy->x <= 0){
 		enemy-> x = 0;
-		enemy->direction[0] = (enemy->direction[0] * (-1));
-		enemy->x += enemy->c.speed *((enemy->direction[0] * (now - old))/1000000000);
+		enemy->side_x = !enemy->side_x;
 		return; 
 	}
 
 	if(enemy-> y + enemy->c.length >= SCREEN_Y){
 		enemy-> y = SCREEN_Y - enemy->c.length;
-		enemy->direction[1] = (enemy->direction[1] * (-1));
-		enemy->y += enemy->c.speed *((enemy->direction[1] * (now - old))/1000000000);
+		enemy->side_y= !enemy->side_y;
 		return;
 	}
 
 	if(enemy->y <= 0){
 		enemy-> y = 0;
-		enemy->direction[1] = (enemy->direction[1] * (-1));
-		enemy->y += enemy->c.speed *((enemy->direction[1] * (now - old))/1000000000);
+		enemy->side_y = !enemy->side_y;
 		return;
 	}
 }
