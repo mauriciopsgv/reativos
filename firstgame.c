@@ -4,7 +4,6 @@
 #include <math.h>
 #define B_SIZE 50
 #define B_SPEED 1
-#define SPEED_BLUE
 #define R_SIZE 20
 #define R_SPEED 3
 #define G_SIZE 35
@@ -81,9 +80,9 @@ int main(int argc, char* args[]){
 	green.width = G_SIZE;
 	green.length = G_SIZE;
 	green.speed = G_SPEED;
-	red.R = 0x00;
-	red.G = 0xFF;
-	red.B = 0x00;
+	green.R = 0x00;
+	green.G = 0xFF;
+	green.B = 0x00;
 
 	Color colors[3] ={red, green, blue};
 
@@ -138,10 +137,10 @@ int main(int argc, char* args[]){
 			
 		}
 
-	for(i=0; i<5; i++){
-		update_enemys_x(&enemys[i]);
-		update_enemys_y(&enemys[i]);
-	}
+		for(i=0; i<5; i++){
+			update_enemys_x(&enemys[i]);
+			update_enemys_y(&enemys[i]);
+		}
 
 
 	//RENDERIZATION
