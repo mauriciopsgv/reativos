@@ -98,7 +98,7 @@ void change_color (Square * hero, Color * colors){
 	hero->c = colors[cont_cores%3];
 
 	hero->x = hero->x + hero->c.width/2;
-	hero->y = hero->y - hero->c.length/2;
+	hero->y = hero->y + hero->c.length/2;
 }
 
 int main(int argc, char* args[]){
