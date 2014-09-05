@@ -48,6 +48,32 @@ void update_enemys_y (Square* enemy){
 	return;	
 }
 
+void collision_with_walls (void){
+	if(enemy->x + enemy->c->width + enemy->c->speed >= 640){
+		enemy-> x = 640 - enemy->c->width;
+		enemy-> c->speed = enemy-> c->speed * (-1);
+		return;
+	}
+
+	if(enemy->x + enemy->c->speed <= 0){
+		enemy-> x = 0;
+		enemy-> c->speed = enemy-> c->speed * (-1);
+		return; 
+	}
+
+	if(enemy-> y + enemy->c->length + enemy->c->speed >= 480){
+		enemy-> y = 480 - enemy->c->length;
+		enemy-> c->speed = enemy-> c->speed * (-1);
+		return;
+	}
+
+	if(enemy->y + enemy->c->speed <= 0){
+		enemy-> y = 0;
+		enemy-> c->speed = enemy-> c->speed * (-1);
+		return;
+	}
+}
+
 int main(int argc, char* args[]){
 
 	//INICIALIZATION
@@ -143,6 +169,9 @@ int main(int argc, char* args[]){
 		}
 		old = SDL_GetTicks();
 
+		for(i=0; i<5; i++){
+			collision_with_walls()
+		}
 
 	//RENDERIZATION
 		SDL_SetRenderDrawColor(renderer, 0x00,0x00,0x00,0x00);
@@ -167,29 +196,3 @@ int main(int argc, char* args[]){
 
 		return 0;
 }
-
-/*	if(enemy->x + enemy->c->width + enemy->c->speed >= 640){
-		enemy-> x = 640 - enemy->c->width;
-		enemy-> c->speed = enemy-> c->speed * (-1);
-		return;
-	}
-
-	if(enemy->x + enemy->c->speed <= 0){
-		enemy-> x = 0;
-		enemy-> c->speed = enemy-> c->speed * (-1);
-		return; 
-	}
-
-	if(enemy-> y + enemy->c->length + enemy->c->speed >= 480){
-		enemy-> y = 480 - enemy->c->length;
-		enemy-> c->speed = enemy-> c->speed * (-1);
-		return;
-	}
-
-	if(enemy->y + enemy->c->speed <= 0){
-		enemy-> y = 0;
-		enemy-> c->speed = enemy-> c->speed * (-1);
-		return;
-	}
-
-*/
