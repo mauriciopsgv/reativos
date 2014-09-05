@@ -39,12 +39,12 @@ void creating_enemys (Square* enemy, Color* colors){
 }
 
 void update_enemys_x (Square* enemy){
-	enemy->x += ( enemy->c.speed * enemy->direction[0] * (now - old))/100;
+	enemy->x += ( enemy->c.speed * enemy->direction[0] * (now - old))/1000;
 	return;	
 }
 
 void update_enemys_y (Square* enemy){
-	enemy->y += (enemy->c.speed * enemy->direction[1] * (now - old))/100;
+	enemy->y += (enemy->c.speed * enemy->direction[1] * (now - old))/1000;
 	return;	
 }
 
