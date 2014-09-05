@@ -57,28 +57,28 @@ void update_enemys_y (Square* enemy){
 void collision_with_walls (Square * enemy){
 	if(enemy->x + enemy->c.width + enemy->c.speed >= SCREEN_X){
 		enemy->x = SCREEN_X - enemy->c.width;
-		enemy->c.speed = enemy->c.speed * (-1);
+		enemy->direction[0] = enemy->direction[0] * (-1);
 		printf("enemy->c.speed : %d\n");
 		return;
 	}
 
 	if(enemy->x + enemy->c.speed <= 0){
 		enemy-> x = 0;
-		enemy-> c.speed = enemy-> c.speed * (-1);
+		enemy->direction[0] = enemy->direction[0] * (-1);
 		printf("enemy->c.speed : %d\n");
 		return; 
 	}
 
 	if(enemy-> y + enemy->c.length + enemy->c.speed >= SCREEN_Y){
 		enemy-> y = SCREEN_Y - enemy->c.length;
-		enemy-> c.speed = enemy-> c.speed * (-1);
+		enemy->direction[1] = enemy->direction[1] * (-1);
 		printf("enemy->c.speed : %d\n");
 		return;
 	}
 
 	if(enemy->y + enemy->c.speed <= 0){
 		enemy-> y = 0;
-		enemy-> c.speed = enemy-> c.speed * (-1);
+		enemy->direction[1] = enemy->direction[1] * (-1);
 		printf("enemy->c.speed : %d\n");
 		return;
 	}
