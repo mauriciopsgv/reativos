@@ -29,7 +29,7 @@ typedef struct square{
 	Color* c;
 } Square;
 
-void creating_enemies (Square* enemie, Color* color){
+void creating_enemies (Square* enemie, Color* colors){
 	float theta = rand()%360;
 	int j = rand()%3;
 	enemie->x = rand()% (641-color->width);
@@ -120,8 +120,8 @@ int main(int argc, char* args[]){
 		SDL_RenderFillRect(renderer, NULL);
 
 		for(i=0; i<5; i++){
-			SDL_SetRenderDrawColor(renderer, enemies[i]->c->R,enemies[i]->c->G,enemies[i]->c->B,0x00);
-			SDL_RenderFillRect(renderer, {enemies[i]->x, enemies[i]->y, enemies[i]->width, enemies[i]->length});
+			SDL_SetRenderDrawColor(renderer, enemies[i].c.R,enemies[i].c.G,enemies[i].c.B,0x00);
+			SDL_RenderFillRect(renderer, {enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].length});
 		}
 
 	}
@@ -131,6 +131,7 @@ int main(int argc, char* args[]){
 		SDL_DestroyWindow(window);
 		SDL_Quit();
 
+		return 0;
 }
 
 /*	if(enemie->x + enemie->c->width + enemie->c->speed >= 640){
