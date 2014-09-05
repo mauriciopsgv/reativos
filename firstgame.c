@@ -113,7 +113,7 @@ int main(int argc, char* args[]){
 		if(SDL_PollEvent(&e) == 1){
 			if(e.type == SDL_QUIT)
 				break;
-			else if( e.type == SDL_KEYDOWN){
+			/*else if( e.type == SDL_KEYDOWN){
 				switch (e.key.keysym.sym){
 					case SDLK_UP:
 						hero.y -= hero.c.speed * (now-old);
@@ -134,7 +134,8 @@ int main(int argc, char* args[]){
 					//case SDLK_SPACE:
 
 				}
-			}
+				*/
+			
 		}
 
 	for(i=0; i<5; i++){
@@ -149,10 +150,10 @@ int main(int argc, char* args[]){
 
 		for(i=0; i<5; i++){
 			SDL_SetRenderDrawColor(renderer, enemys[i].c.R,enemys[i].c.G,enemys[i].c.B,0x00);
-			r[0]=enemys[i].x;
-			r[1]=enemys[i].y;
-			r[2]=enemys[i].c.width;
-			r[3]=enemys[i].c.length;
+			r.x=enemys[i].x;
+			r.y=enemys[i].y;
+			r.w=enemys[i].c.width;
+			r.h=enemys[i].c.length;
 			SDL_RenderFillRect(renderer, &r);
 		}
 
