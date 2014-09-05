@@ -101,7 +101,7 @@ void collision_with_hero (Square * enemys, Square * hero){
 	Square aux;
 
 	for(k=0; k<n_enemies; k++){
-		if(hero->xm - enemy->xm < (hero->c.width - enemy->c.width)/2  && hero->ym - enemy->ym < (hero->c.length - enemy->c.length)/2 )
+		if(hero->xm - enemys[k]->xm < (hero->c.width - enemy[k]->c.width)/2  && hero->ym - enemy[k]->ym < (hero->c.length - enemy[k]->c.length)/2 )
 		{
 			if(hero->c.speed == enemy->c.speed)
 			{
@@ -171,8 +171,8 @@ int main(int argc, char* args[]){
 	hero.x = 320; 
 	hero.y = 240; 
 	hero.c = green; // as green is the all-around color, it's set as the default color
-	hero->xm = hero->x + hero->c.width/2;
-	hero->ym = hero->y + hero->c.length/2;
+	hero.xm = hero.x + hero.c.width/2;
+	hero.ym = hero.y + hero.c.length/2;
 
 	//Declaration of enemys
 	Square enemy1, enemy2, enemy3, enemy4, enemy5;
