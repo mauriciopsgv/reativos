@@ -103,7 +103,7 @@ void collision_with_hero (Square * enemys, Square * hero){
 	for(k=0; k<n_enemies; k++){
 		if(hero->xm - enemys[k].xm < (hero->c.width - enemys[k].c.width)/2  && hero->ym - enemys[k].ym < (hero->c.length - enemys[k].c.length)/2 )
 		{
-			if(hero->c.speed == enemy->c.speed)
+			if(hero->c.speed == enemys[k].c.speed)
 			{
 				n_enemies--;
 				aux = enemys[k];
