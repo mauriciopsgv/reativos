@@ -49,17 +49,17 @@ void creating_enemys (Square* enemy, Color* colors){
 
 void update_enemys_x (Square* enemy){
 	if(enemy->side_x == 1)
-		enemy->x += enemy->c.speed *((enemy->direction[0] * (now - old))/1000000000);
+		enemy->x += enemy->c.speed *((enemy->direction[0] * (now - old))/100000000);
 	else
-		enemy->x -= enemy->c.speed *((enemy->direction[0] * (now - old))/1000000000);
+		enemy->x -= enemy->c.speed *((enemy->direction[0] * (now - old))/100000000);
 	return;	
 }
 
 void update_enemys_y (Square* enemy){
 	if(enemy->side_y == 1)
-		enemy->y += enemy->c.speed *((enemy->direction[1] * (now - old))/1000000000);
+		enemy->y += enemy->c.speed *((enemy->direction[1] * (now - old))/100000000);
 	else
-		enemy->y -= enemy->c.speed *((enemy->direction[1] * (now - old))/1000000000);
+		enemy->y -= enemy->c.speed *((enemy->direction[1] * (now - old))/100000000);
 	return;	
 }
 
@@ -200,6 +200,20 @@ int main(int argc, char* args[]){
 			r.h=enemys[i].c.length;
 			SDL_RenderFillRect(renderer, &r);
 		}
+
+		SDL_SetRenderDrawColor(renderer, hero.c.R, hero.c.G, hero.c.B, 0x00);
+		r.x=hero.x;
+		r.y=hero.y;
+		r.w=hero.c.width;
+		r.h=hero.c.length;
+		SDL_RenderFillRect(renderer, &r);
+
+		SDL_SetRenderDrawColor(renderer, hero.c.R, hero.c.G, hero.c.B, 0x00);
+		r.x=hero.x+5;
+		r.y=hero.y+5;
+		r.w=hero.c.width-5;
+		r.h=hero.c.length-5;
+		SDL_RenderFillRect(renderer, &r);
 
 		SDL_RenderPresent(renderer);
 	}
