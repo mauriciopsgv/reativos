@@ -33,8 +33,8 @@ void creating_enemys (Square* enemy, Color* colors){
 	int j = rand()%3;
 	enemy->x = rand()% (641-colors[j].width);
 	enemy->y = rand()% (481-colors[j].length);
-	enemy->direction[0] = (int) sin(theta)*100; 
-	enemy->direction[1] = (int) cos(theta)*100;
+	enemy->direction[0] = (int) (sin(theta)*100); 
+	enemy->direction[1] = (int) (cos(theta)*100);
 	enemy->c = colors[j];
 }
 
