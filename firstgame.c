@@ -174,7 +174,7 @@ int main(int argc, char* args[]){
 					//case SDLK_SPACE:
 
 				}
-			
+			}
 		}
 
 		for(i=0; i<5; i++){
