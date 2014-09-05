@@ -39,12 +39,14 @@ void creating_enemys (Square* enemy, Color* colors){
 }
 
 void update_enemys_x (Square* enemy){
-	enemy->x += ( enemy->c.speed * enemy->direction[0] * (now - old))/10 ;
+	enemy->x += ( enemy->c.speed * enemy->direction[0] * (now - old))/10;
+	printf("UPDATE");
 	return;	
 }
 
 void update_enemys_y (Square* enemy){
 	enemy->y += (enemy->c.speed * enemy->direction[1] * (now - old))/10;
+	printf("UPDATE");
 	return;	
 }
 
@@ -141,6 +143,7 @@ int main(int argc, char* args[]){
 			update_enemys_x(&enemys[i]);
 			update_enemys_y(&enemys[i]);
 		}
+		old = SDL_GetTicks();
 
 
 	//RENDERIZATION
