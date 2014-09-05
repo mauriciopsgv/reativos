@@ -30,8 +30,6 @@ typedef struct color{
 typedef struct square{
 	int x;
 	int y;
-	int xm;
-	int ym;
 	int side_x;
 	int side_y;
 	float direction[2];
@@ -49,8 +47,6 @@ void creating_enemys (Square* enemy, Color* colors){
 	enemy->side_y = rand()%2;
 
 	enemy->c = colors[j];
-	enemy->xm = enemy->x + enemy->c.width/2;
-	enemy->ym = enemy->y + enemy->c.length/2;
 	n_enemies++;
 }
 
@@ -101,7 +97,7 @@ void collision_with_hero (Square * enemys, Square * hero){
 	Square aux;
 
 	for(k=0; k<n_enemies; k++){
-		if(hero->xm - enemys[k].xm < (hero->c.width - enemys[k].c.width)/2  && hero->ym - enemys[k].ym < (hero->c.length - enemys[k].c.length)/2 )
+		if(  (hero->x - (hero->c.width)/2) - (enemys[k].x - (enemys[k].c.width)/2) < (hero->c.width + enemys[k].c.width)/2  && ( hero->y - (hero->c.length)/2 ) - (enemys[k].y - (enemys[k])/2) < (hero->c.length + enemys[k].c.length)/2 )
 		{
 			if(hero->c.speed == enemys[k].c.speed)
 			{
@@ -120,11 +116,13 @@ void collision_with_hero (Square * enemys, Square * hero){
 
 void change_color (Square * hero, Color * colors){
 	cont_cores++;
+	hero->x = hero->x + hero->c.width/2;
+	hero->y = hero->y + hero->c.length/2;
 	
 	hero->c = colors[cont_cores%3];
 
-	hero->x = hero->xm - hero->c.width/2;
-	hero->y = hero->ym - hero->c.length/2;
+	hero->x = hero->x - hero->c.width/2;
+	hero->y = hero->y - hero->c.length/2;
 }
 
 int main(int argc, char* args[]){
@@ -171,8 +169,6 @@ int main(int argc, char* args[]){
 	hero.x = 320; 
 	hero.y = 240; 
 	hero.c = green; // as green is the all-around color, it's set as the default color
-	hero.xm = hero.x + hero.c.width/2;
-	hero.ym = hero.y + hero.c.length/2;
 
 	//Declaration of enemys
 	Square enemy1, enemy2, enemy3, enemy4, enemy5;
