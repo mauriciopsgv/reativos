@@ -8,8 +8,8 @@
 #define R_SPEED 3
 #define G_SIZE 35
 #define G_SPEED 2
-#define SCREEN_X 1320
-#define SCREEN_Y 800
+#define SCREEN_X 800
+#define SCREEN_Y 600
 
 
 unsigned int now;
@@ -34,8 +34,8 @@ typedef struct square{
 void creating_enemys (Square* enemy, Color* colors){
 	float theta = rand()%360;
 	int j = rand()%3;
-	enemy->x = rand()% (1321-colors[j].width);
-	enemy->y = rand()% (801-colors[j].length);
+	enemy->x = rand()% (SCREEN_X+1-colors[j].width);
+	enemy->y = rand()% (SCREEN_Y+1-colors[j].length);
 	enemy->direction[0] = (int) (sin(theta)*100); 
 	enemy->direction[1] = (int) (cos(theta)*100);
 
