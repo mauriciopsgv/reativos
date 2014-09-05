@@ -48,7 +48,7 @@ void update_enemys_y (Square* enemy){
 	return;	
 }
 
-void collision_with_walls (void){
+void collision_with_walls (Square * enemy){
 	if(enemy->x + enemy->c->width + enemy->c->speed >= 640){
 		enemy-> x = 640 - enemy->c->width;
 		enemy-> c->speed = enemy-> c->speed * (-1);
@@ -170,7 +170,7 @@ int main(int argc, char* args[]){
 		old = SDL_GetTicks();
 
 		for(i=0; i<5; i++){
-			collision_with_walls()
+			collision_with_walls();
 		}
 
 	//RENDERIZATION
