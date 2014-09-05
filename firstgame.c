@@ -12,9 +12,11 @@
 #define SCREEN_Y 600
 
 
-unsigned int now;
-unsigned int old = 0;
+unsigned long now;
+unsigned long old = 0;
+unsigned long dt;
 int cont_cores = 4;
+int n_enemies=0;
 
 typedef struct color{
 	int width;
@@ -28,6 +30,8 @@ typedef struct color{
 typedef struct square{
 	int x;
 	int y;
+	int xm;
+	int ym;
 	int side_x;
 	int side_y;
 	float direction[2];
@@ -45,22 +49,24 @@ void creating_enemys (Square* enemy, Color* colors){
 	enemy->side_y = rand()%2;
 
 	enemy->c = colors[j];
-	printf("enemy->c.speed : %d\n", enemy->c.speed);
+	enemy->xm = enemy->x + enemy->c.width/2;
+	enemy->ym = enemy->y + enemy->c.length/2;
+	n_enemies++;
 }
 
 void update_enemys_x (Square* enemy){
 	if(enemy->side_x == 1)
-		enemy->x += enemy->c.speed *(( (enemy->direction[0]/100) * (now - old))/10);
+		enemy->x += enemy->c.speed *(( (enemy->direction[0]/100) * (dt))/10);
 	else
-		enemy->x -= enemy->c.speed *(( (enemy->direction[0]/100) * (now - old))/10);
+		enemy->x -= enemy->c.speed *(( (enemy->direction[0]/100) * (dt))/10);
 	return;	
 }
 
 void update_enemys_y (Square* enemy){
 	if(enemy->side_y == 1)
-		enemy->y += enemy->c.speed *((  (enemy->direction[1]/100) * (now - old))/10);
+		enemy->y += enemy->c.speed *((  (enemy->direction[1]/100) * (dt))/10);
 	else
-		enemy->y -= enemy->c.speed *((  (enemy->direction[1]/100) * (now - old))/10);
+		enemy->y -= enemy->c.speed *((  (enemy->direction[1]/100) * (dt))/10);
 	return;	
 }
 
@@ -90,15 +96,35 @@ void collision_with_walls (Square * enemy){
 	}
 }
 
+void collision_with_hero (Square * enemys, Square * hero){
+	int k;
+	Square aux;
+
+	for(k=0; k<n_enemies; k++){
+		if(hero->xm - enemy->xm < (hero->c.width - enemy->c.width)/2  && hero->ym - enemy->ym < (hero->c.length - enemy->c.length)/2 )
+		{
+			if(hero->c.speed == enemy->c.speed)
+			{
+				n_enemies--;
+				aux = enemys[k];
+				enemys[k] = enemys[n_enemies];
+				enemys[n_enemies] = aux;
+			}
+			else
+			{
+				while(1);
+			}
+		}		
+	}
+}
+
 void change_color (Square * hero, Color * colors){
 	cont_cores++;
-	hero->x = hero->x + hero->c.width/2;
-	hero->y = hero->y + hero->c.length/2;
-
+	
 	hero->c = colors[cont_cores%3];
 
-	hero->x = hero->x - hero->c.width/2;
-	hero->y = hero->y - hero->c.length/2;
+	hero->x = hero->xm - hero->c.width/2;
+	hero->y = hero->ym - hero->c.length/2;
 }
 
 int main(int argc, char* args[]){
@@ -145,6 +171,8 @@ int main(int argc, char* args[]){
 	hero.x = 320; 
 	hero.y = 240; 
 	hero.c = green; // as green is the all-around color, it's set as the default color
+	hero->xm = hero->x + hero->c.width/2;
+	hero->ym = hero->y + hero->c.length/2;
 
 	//Declaration of enemys
 	Square enemy1, enemy2, enemy3, enemy4, enemy5;
@@ -161,6 +189,7 @@ int main(int argc, char* args[]){
 	while(1){
 
 		now = SDL_GetTicks();
+		dt = now - old;
 
 		if(SDL_PollEvent(&e) == 1){
 			if(e.type == SDL_QUIT)
@@ -168,19 +197,19 @@ int main(int argc, char* args[]){
 			else if( e.type == SDL_KEYDOWN){
 				switch (e.key.keysym.sym){
 					case SDLK_UP:
-						hero.y -= ((hero.c.speed * (now-old))/10);
+						hero.y -= ((hero.c.speed * dt)/10);
 						break;
 
 					case SDLK_DOWN:
-						hero.y += ((hero.c.speed * (now-old))/10);
+						hero.y += ((hero.c.speed * dt)/10);
 						break;
 
 					case SDLK_LEFT:
-						hero.x -= ((hero.c.speed * (now-old))/10);
+						hero.x -= ((hero.c.speed * dt)/10);
 						break;
 
 					case SDLK_RIGHT:
-						hero.x += ((hero.c.speed * (now-old))/10);
+						hero.x += ((hero.c.speed * dt)/10);
 						break;
 
 					case SDLK_SPACE:
@@ -193,7 +222,7 @@ int main(int argc, char* args[]){
 			
 		}
 
-		for(i=0; i<5; i++){
+		for(i=0; i<n_enemies; i++){
 			update_enemys_x(&enemys[i]);
 			update_enemys_y(&enemys[i]);
 		}
@@ -202,12 +231,13 @@ int main(int argc, char* args[]){
 		for(i=0; i<5; i++){
 			collision_with_walls(&enemys[i]);
 		}
+			collision_with_hero(enemys, &hero);
 
 	//RENDERIZATION
 		SDL_SetRenderDrawColor(renderer, 0x00,0x00,0x00,0x00);
 		SDL_RenderFillRect(renderer, NULL);
 
-		for(i=0; i<5; i++){
+		for(i=0; i<n_enemies; i++){
 			SDL_SetRenderDrawColor(renderer, enemys[i].c.R,enemys[i].c.G,enemys[i].c.B,0x00);
 			r.x=enemys[i].x;
 			r.y=enemys[i].y;
