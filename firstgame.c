@@ -96,9 +96,6 @@ int main(int argc, char* args[]){
 	red.G = 0xFF;
 	red.B = 0x00;
 
-	//Generic Enemy
-	Square g_enemy
-
 	//Declaration of the hero
 	Square hero;
 	hero.x = 320; 
@@ -116,9 +113,7 @@ int main(int argc, char* args[]){
 		SDL_PoolEvent(&e);
 		now = SDL_GetTicks();
 
-		if(e != 0){
-
-		}
+		//if(e != 0){}
 		
 		if(now > old + wait){
 			update_enemies_x(&enemie1);
