@@ -57,7 +57,7 @@ int main(int argc, char* args[]){
 	SDL_Window* window = SDL_CreateWindow("Squares", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640,480, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, 1, 0);
 	SDL_Event e;
-	SDL_rect r;
+	SDL_Rect r;
 	int i;
 
 	//Declaration of Colors
@@ -92,7 +92,7 @@ int main(int argc, char* args[]){
 	Square hero;
 	hero.x = 320; 
 	hero.y = 240; 
-	hero.c = &green; // as green is the all-around color, it's set as the default color
+	hero.c = green; // as green is the all-around color, it's set as the default color
 
 	//Declaration of enemys
 	Square enemy1, enemy2, enemy3, enemy4, enemy5;
