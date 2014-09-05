@@ -100,7 +100,7 @@ int main(int argc, char* args[]){
 		creating_enemys( &enemys[i], colors);
 	}
 
-	SDL_Rect r = {enemys[i].x, enemys[i].y, enemys[i].width, enemys[i].length};
+	SDL_Rect r = {enemys[i].x, enemys[i].y, enemys[i].c.width, enemys[i].c.length};
 	
 
 
@@ -109,7 +109,7 @@ int main(int argc, char* args[]){
 
 		now = SDL_GetTicks();
 
-		if(SDL_PoolEvent(&e) == 1){
+		if(SDL_PollEvent(&e) == 1){
 			if(e.type == SDL_Quit)
 				break;
 		}
