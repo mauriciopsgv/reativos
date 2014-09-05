@@ -49,42 +49,42 @@ void creating_enemys (Square* enemy, Color* colors){
 
 void update_enemys_x (Square* enemy){
 	if(enemy->side_x == 1)
-		enemy->x += enemy->c.speed *((enemy->direction[0] * (now - old))/10000000);
+		enemy->x += enemy->c.speed *(( (enemy->direction[0]/100) * (now - old))/10);
 	else
-		enemy->x -= enemy->c.speed *((enemy->direction[0] * (now - old))/10000000);
+		enemy->x -= enemy->c.speed *(( (enemy->direction[0]/100) * (now - old))/10);
 	return;	
 }
 
 void update_enemys_y (Square* enemy){
 	if(enemy->side_y == 1)
-		enemy->y += enemy->c.speed *((enemy->direction[1] * (now - old))/10000000);
+		enemy->y += enemy->c.speed *((  (enemy->direction[1]/100) * (now - old))/10);
 	else
-		enemy->y -= enemy->c.speed *((enemy->direction[1] * (now - old))/10000000);
+		enemy->y -= enemy->c.speed *((  (enemy->direction[1]/100) * (now - old))/10);
 	return;	
 }
 
 void collision_with_walls (Square * enemy){
 	if(enemy->x + enemy->c.width >= SCREEN_X){
 		enemy->x = SCREEN_X - enemy->c.width;
-		enemy->side_x = !enemy->side_x;
+		enemy->side_x = 0;
 		return;
 	}
 
 	if(enemy->x <= 0){
 		enemy-> x = 0;
-		enemy->side_x = !enemy->side_x;
+		enemy->side_x = 1;
 		return; 
 	}
 
 	if(enemy-> y + enemy->c.length >= SCREEN_Y){
 		enemy-> y = SCREEN_Y - enemy->c.length;
-		enemy->side_y= !enemy->side_y;
+		enemy->side_y= 0;
 		return;
 	}
 
 	if(enemy->y <= 0){
 		enemy-> y = 0;
-		enemy->side_y = !enemy->side_y;
+		enemy->side_y = 1;
 		return;
 	}
 }
@@ -156,19 +156,19 @@ int main(int argc, char* args[]){
 			else if( e.type == SDL_KEYDOWN){
 				switch (e.key.keysym.sym){
 					case SDLK_UP:
-						hero.y -= ((hero.c.speed * (now-old))/20);
+						hero.y -= ((hero.c.speed * (now-old))/10);
 						break;
 
 					case SDLK_DOWN:
-						hero.y += ((hero.c.speed * (now-old))/20);
+						hero.y += ((hero.c.speed * (now-old))/10);
 						break;
 
 					case SDLK_LEFT:
-						hero.x -= ((hero.c.speed * (now-old))/20);
+						hero.x -= ((hero.c.speed * (now-old))/10);
 						break;
 
 					case SDLK_RIGHT:
-						hero.x += ((hero.c.speed * (now-old))/20);
+						hero.x += ((hero.c.speed * (now-old))/10);
 						break;
 
 					//case SDLK_SPACE:
