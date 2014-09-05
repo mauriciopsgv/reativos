@@ -184,7 +184,7 @@ int main(int argc, char* args[]){
 						break;
 
 					case SDLK_SPACE:
-						change_color(&hero, &colors);
+						change_color(&hero, colors);
 						break;
 
 
