@@ -57,7 +57,6 @@ int main(int argc, char* args[]){
 	SDL_Window* window = SDL_CreateWindow("Squares", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640,480, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, 1, 0);
 	SDL_Event e;
-	SDL_Rect r;
 	int i;
 
 	//Declaration of Colors
@@ -100,6 +99,8 @@ int main(int argc, char* args[]){
 	for(i=0; i<5; i++){
 		creating_enemys( &enemys[i], colors);
 	}
+
+	SDL_Rect r = {enemys[i].x, enemys[i].y, enemys[i].width, enemys[i].length};
 	
 
 
@@ -125,7 +126,6 @@ int main(int argc, char* args[]){
 
 		for(i=0; i<5; i++){
 			SDL_SetRenderDrawColor(renderer, enemys[i].c.R,enemys[i].c.G,enemys[i].c.B,0x00);
-			r = {enemys[i].x, enemys[i].y, enemys[i].width, enemys[i].length};
 			SDL_RenderFillRect(renderer, r);
 		}
 
