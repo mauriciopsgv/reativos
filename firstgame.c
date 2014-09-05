@@ -26,32 +26,33 @@ typedef struct square{
 	int x;
 	int y;
 	int direction[2];
-	Color* c;
+	struct color c;
 } Square;
 
-void creating_enemies (Square* enemie, Color* colors){
+void creating_enemys (Square* enemy, Color* colors){
 	float theta = rand()%360;
 	int j = rand()%3;
-	enemie->x = rand()% (641-color->width);
-	enemie->y = rand()% (481-color->length);
-	enemie->direction = {(int*) sin(theta)*100, (int*) cos(theta)*100}; 
-	enemie->c = colors[j];
+	enemy->x = rand()% (641-colors[j].width);
+	enemy->y = rand()% (481-colors[j].length);
+	enemy->direction[0] = (int*) sin(theta)*100; 
+	enemy->direction[1] = (int*) cos(theta)*100;
+	enemy->c = colors[j];
 }
 
-void update_enemies_x (Square* enemie){
-	enemie->x += ( enemie->c->speed * enemie->direction[0] * (now - old))/100 ;
+void update_enemys_x (Square* enemy){
+	enemy->x += ( enemy->c->speed * enemy->direction[0] * (now - old))/100 ;
 	return;	
 }
 
-void update_enemies_y (Square* enemie){
-	enemie->y += (enemie->c->speed * enemie->direction[1] * (now - old))/100;
+void update_enemys_y (Square* enemy){
+	enemy->y += (enemy->c->speed * enemy->direction[1] * (now - old))/100;
 	return;	
 }
 
 int main(int argc, char* args[]){
 
 	//INICIALIZATION
-	setSeed(time(NULL));
+	srand(time(NULL));
 	SDL_Init(SDL_INIT_EVERYTHING);
 	SDL_Window* window = SDL_CreateWindow("Squares", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640,480, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, 1, 0);
@@ -83,7 +84,7 @@ int main(int argc, char* args[]){
 	red.G = 0xFF;
 	red.B = 0x00;
 
-	Color colors[3] ={ red, green, blue};
+	Color colors[3] ={red, green, blue};
 
 
 	//Declaration of the hero
@@ -92,11 +93,11 @@ int main(int argc, char* args[]){
 	hero.y = 240; 
 	hero.c = &green; // as green is the all-around color, it's set as the default color
 
-	//Declaration of Enemies
-	Square enemie1, enemie2, enemie3, enemie4, enemie5;
-	Square enemies[5]  = {enemie1, enemie2, enemie3, enemie4, enemie5};
+	//Declaration of enemys
+	Square enemy1, enemy2, enemy3, enemy4, enemy5;
+	Square enemys[5]  = {enemy1, enemy2, enemy3, enemy4, enemy5};
 	for(i=0; i<5; i++){
-		creating_enemies( &enemies[i], colors);
+		creating_enemys( &enemys[i], colors);
 	}
 	
 
@@ -111,8 +112,10 @@ int main(int argc, char* args[]){
 				break;
 		}
 
-		update_enemies_x(&enemie1);
-		update_enemies_y(&enemie1);
+	for(i=0; i<5; i++){
+		update_enemys_x(&enemys[i]);
+		update_enemys_y(&enemys[i]);
+	}
 
 
 	//RENDERIZATION
@@ -120,8 +123,8 @@ int main(int argc, char* args[]){
 		SDL_RenderFillRect(renderer, NULL);
 
 		for(i=0; i<5; i++){
-			SDL_SetRenderDrawColor(renderer, enemies[i].c.R,enemies[i].c.G,enemies[i].c.B,0x00);
-			SDL_RenderFillRect(renderer, {enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].length});
+			SDL_SetRenderDrawColor(renderer, enemys[i].c.R,enemys[i].c.G,enemys[i].c.B,0x00);
+			SDL_RenderFillRect(renderer, {enemys[i].x, enemys[i].y, enemys[i].width, enemys[i].length});
 		}
 
 	}
@@ -134,27 +137,27 @@ int main(int argc, char* args[]){
 		return 0;
 }
 
-/*	if(enemie->x + enemie->c->width + enemie->c->speed >= 640){
-		enemie-> x = 640 - enemie->c->width;
-		enemie-> c->speed = enemie-> c->speed * (-1);
+/*	if(enemy->x + enemy->c->width + enemy->c->speed >= 640){
+		enemy-> x = 640 - enemy->c->width;
+		enemy-> c->speed = enemy-> c->speed * (-1);
 		return;
 	}
 
-	if(enemie->x + enemie->c->speed <= 0){
-		enemie-> x = 0;
-		enemie-> c->speed = enemie-> c->speed * (-1);
+	if(enemy->x + enemy->c->speed <= 0){
+		enemy-> x = 0;
+		enemy-> c->speed = enemy-> c->speed * (-1);
 		return; 
 	}
 
-	if(enemie-> y + enemie->c->length + enemie->c->speed >= 480){
-		enemie-> y = 480 - enemie->c->length;
-		enemie-> c->speed = enemie-> c->speed * (-1);
+	if(enemy-> y + enemy->c->length + enemy->c->speed >= 480){
+		enemy-> y = 480 - enemy->c->length;
+		enemy-> c->speed = enemy-> c->speed * (-1);
 		return;
 	}
 
-	if(enemie->y + enemie->c->speed <= 0){
-		enemie-> y = 0;
-		enemie-> c->speed = enemie-> c->speed * (-1);
+	if(enemy->y + enemy->c->speed <= 0){
+		enemy-> y = 0;
+		enemy-> c->speed = enemy-> c->speed * (-1);
 		return;
 	}
 
