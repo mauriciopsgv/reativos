@@ -29,7 +29,7 @@ typedef struct square{
 	int y;
 	int side_x;
 	int side_y;
-	int direction[2];
+	float direction[2];
 	struct color c;
 } Square;
 
@@ -38,8 +38,8 @@ void creating_enemys (Square* enemy, Color* colors){
 	int j = rand()%3;
 	enemy->x = rand()% (SCREEN_X+1-colors[j].width);
 	enemy->y = rand()% (SCREEN_Y+1-colors[j].length);
-	enemy->direction[0] = (int) (cos(theta)*100); 
-	enemy->direction[1] = (int) (sin(theta)*100);
+	enemy->direction[0] = (cos(theta)*100); 
+	enemy->direction[1] = (sin(theta)*100);
 	enemy->side_x = rand()%2;
 	enemy->side_y = rand()%2;
 
