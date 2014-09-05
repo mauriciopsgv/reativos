@@ -45,13 +45,13 @@ void creating_enemys (Square* enemy, Color* colors){
 
 void update_enemys_x (Square* enemy){
 	enemy->x += ( enemy->c.speed * enemy->direction[0] * (now - old))/10000000;
-	printf("speed x = %d\t", enemy->x);
+	printf("now - old = %d\n", now-old);
 	return;	
 }
 
 void update_enemys_y (Square* enemy){
 	enemy->y += (enemy->c.speed * enemy->direction[1] * (now - old))/100000000;
-	printf("speed y = %d\n", enemy->y);
+	printf("now - old = %d\n", now-old);
 	return;	
 }
 
