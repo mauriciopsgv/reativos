@@ -110,7 +110,7 @@ int main(int argc, char* args[]){
 		now = SDL_GetTicks();
 
 		if(SDL_PollEvent(&e) == 1){
-			if(e.type == SDL_Quit)
+			if(e.type == SDL_QUIT)
 				break;
 		}
 
@@ -126,7 +126,7 @@ int main(int argc, char* args[]){
 
 		for(i=0; i<5; i++){
 			SDL_SetRenderDrawColor(renderer, enemys[i].c.R,enemys[i].c.G,enemys[i].c.B,0x00);
-			SDL_RenderFillRect(renderer, r);
+			SDL_RenderFillRect(renderer, &r);
 		}
 
 	}
