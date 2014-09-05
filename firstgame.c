@@ -8,6 +8,9 @@
 #define R_SPEED 3
 #define G_SIZE 35
 #define G_SPEED 2
+#define SCREEN_X 1320
+#define SCREEN_Y 800
+
 
 unsigned int now;
 unsigned int old = 0;
@@ -31,26 +34,30 @@ typedef struct square{
 void creating_enemys (Square* enemy, Color* colors){
 	float theta = rand()%360;
 	int j = rand()%3;
-	enemy->x = rand()% (641-colors[j].width);
-	enemy->y = rand()% (481-colors[j].length);
+	enemy->x = rand()% (1321-colors[j].width);
+	enemy->y = rand()% (801-colors[j].length);
 	enemy->direction[0] = (int) (sin(theta)*100); 
 	enemy->direction[1] = (int) (cos(theta)*100);
+	printf("(%d,%d)\n", enemy->direction[0], enemy->direction[1]);
+
 	enemy->c = colors[j];
 }
 
 void update_enemys_x (Square* enemy){
-	enemy->x += ( enemy->c.speed * enemy->direction[0] * (now - old))/1000;
+	enemy->x += ( enemy->c.speed * enemy->direction[0] * (now - old))/100000;
+	printf("speed x = %d", enemy->x);
 	return;	
 }
 
 void update_enemys_y (Square* enemy){
-	enemy->y += (enemy->c.speed * enemy->direction[1] * (now - old))/1000;
+	enemy->y += (enemy->c.speed * enemy->direction[1] * (now - old))/100000;
+	printf("speed y = %d", enemy->y);
 	return;	
 }
 
 void collision_with_walls (Square * enemy){
-	if(enemy->x + enemy->c.width + enemy->c.speed >= 640){
-		enemy->x = 640 - enemy->c.width;
+	if(enemy->x + enemy->c.width + enemy->c.speed >= SCREEN_X){
+		enemy->x = SCREEN_X - enemy->c.width;
 		enemy->c.speed = enemy->c.speed * (-1);
 		return;
 	}
@@ -61,8 +68,8 @@ void collision_with_walls (Square * enemy){
 		return; 
 	}
 
-	if(enemy-> y + enemy->c.length + enemy->c.speed >= 480){
-		enemy-> y = 480 - enemy->c.length;
+	if(enemy-> y + enemy->c.length + enemy->c.speed >= SCREEN_Y){
+		enemy-> y = SCREEN_Y - enemy->c.length;
 		enemy-> c.speed = enemy-> c.speed * (-1);
 		return;
 	}
@@ -79,7 +86,7 @@ int main(int argc, char* args[]){
 	//INICIALIZATION
 	srand(time(NULL));
 	SDL_Init(SDL_INIT_EVERYTHING);
-	SDL_Window* window = SDL_CreateWindow("Squares", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640,480, SDL_WINDOW_SHOWN);
+	SDL_Window* window = SDL_CreateWindow("Squares", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_X,SCREEN_Y, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, 1, 0);
 	SDL_Event e;
 	SDL_Rect r;
