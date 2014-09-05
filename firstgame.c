@@ -49,17 +49,17 @@ void creating_enemys (Square* enemy, Color* colors){
 
 void update_enemys_x (Square* enemy){
 	if(enemy->side_x == 1)
-		enemy->x += enemy->c.speed *((enemy->direction[0] * (now - old))/100000000);
+		enemy->x += enemy->c.speed *((enemy->direction[0] * (now - old))/10000000);
 	else
-		enemy->x -= enemy->c.speed *((enemy->direction[0] * (now - old))/100000000);
+		enemy->x -= enemy->c.speed *((enemy->direction[0] * (now - old))/10000000);
 	return;	
 }
 
 void update_enemys_y (Square* enemy){
 	if(enemy->side_y == 1)
-		enemy->y += enemy->c.speed *((enemy->direction[1] * (now - old))/100000000);
+		enemy->y += enemy->c.speed *((enemy->direction[1] * (now - old))/10000000);
 	else
-		enemy->y -= enemy->c.speed *((enemy->direction[1] * (now - old))/100000000);
+		enemy->y -= enemy->c.speed *((enemy->direction[1] * (now - old))/10000000);
 	return;	
 }
 
@@ -156,19 +156,19 @@ int main(int argc, char* args[]){
 			else if( e.type == SDL_KEYDOWN){
 				switch (e.key.keysym.sym){
 					case SDLK_UP:
-						hero.y -= ((hero.c.speed * (now-old))/50);
+						hero.y -= ((hero.c.speed * (now-old))/20);
 						break;
 
 					case SDLK_DOWN:
-						hero.y += ((hero.c.speed * (now-old))/50);
+						hero.y += ((hero.c.speed * (now-old))/20);
 						break;
 
 					case SDLK_LEFT:
-						hero.x -= ((hero.c.speed * (now-old))/50);
+						hero.x -= ((hero.c.speed * (now-old))/20);
 						break;
 
 					case SDLK_RIGHT:
-						hero.x += ((hero.c.speed * (now-old))/50);
+						hero.x += ((hero.c.speed * (now-old))/20);
 						break;
 
 					//case SDLK_SPACE:
