@@ -36,21 +36,21 @@ void creating_enemys (Square* enemy, Color* colors){
 	int j = rand()%3;
 	enemy->x = rand()% (SCREEN_X+1-colors[j].width);
 	enemy->y = rand()% (SCREEN_Y+1-colors[j].length);
-	enemy->direction[0] = (int) (sin(theta)*100); 
-	enemy->direction[1] = (int) (cos(theta)*100);
+	enemy->direction[0] = (int) (cos(theta)*100); 
+	enemy->direction[1] = (int) (sin(theta)*100);
 
 	enemy->c = colors[j];
 	printf("enemy->c.speed : %d\n", enemy->c.speed);
 }
 
 void update_enemys_x (Square* enemy){
-	enemy->x += ( enemy->c.speed * enemy->direction[0] * (now - old))/100000000;
+	enemy->x += (( enemy->c.speed * enemy->direction[0] * (now - old))/1000000000);
 	printf("now - old = %d\n", now-old);
 	return;	
 }
 
 void update_enemys_y (Square* enemy){
-	enemy->y += (enemy->c.speed * enemy->direction[1] * (now - old))/100000000;
+	enemy->y += ((enemy->c.speed * enemy->direction[1] * (now - old))/1000000000);
 	printf("now - old = %d\n", now-old);
 	return;	
 }
@@ -58,28 +58,28 @@ void update_enemys_y (Square* enemy){
 void collision_with_walls (Square * enemy){
 	if(enemy->x + enemy->c.width >= SCREEN_X){
 		enemy->x = SCREEN_X - enemy->c.width;
-		enemy->direction[0] = enemy->direction[0] * (-1);
+		enemy->direction[0] = (enemy->direction[0] * (-1));
 		printf("enemy->c.speed : %d\n", enemy->c.speed);
 		return;
 	}
 
 	if(enemy->x <= 0){
 		enemy-> x = 0;
-		enemy->direction[0] = enemy->direction[0] * (-1);
+		enemy->direction[0] = (enemy->direction[0] * (-1));
 		printf("enemy->c.speed : %d\n", enemy->c.speed);
 		return; 
 	}
 
 	if(enemy-> y + enemy->c.length >= SCREEN_Y){
 		enemy-> y = SCREEN_Y - enemy->c.length;
-		enemy->direction[1] = enemy->direction[1] * (-1);
+		enemy->direction[1] = (enemy->direction[1] * (-1));
 		printf("enemy->c.speed : %d\n", enemy->c.speed);
 		return;
 	}
 
 	if(enemy->y <= 0){
 		enemy-> y = 0;
-		enemy->direction[1] = enemy->direction[1] * (-1);
+		enemy->direction[1] = (enemy->direction[1] * (-1));
 		printf("enemy->c.speed : %d\n", enemy->c.speed);
 		return;
 	}
