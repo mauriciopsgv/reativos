@@ -10,9 +10,10 @@
 #define GRAVITY_ACC 8
 #define MIN_VEL 10
 #define MAX_VEL 57
+#define SIDEWAYS_DT 10
 
-int cont_cores=1;
-unsigned long now, dt, old=0;
+int cont_cores=1, side=1;
+unsigned long now, old_s=0, old_g=0;
 
 typedef struct color{
 	int R;
@@ -37,9 +38,9 @@ typedef struct square{
 //Gravity
 void gravity (Square* hero){
 
-	if(now - old >= GRAVITY_DT - hero->vel){
+	if(now - old_g >= GRAVITY_DT - hero->vel){
 		hero->y += 1;
-		old = SDL_GetTicks();
+		old_g = SDL_GetTicks();
 		hero->vel += GRAVITY_ACC;
 		if(hero->vel > MAX_VEL)
 			hero->vel = MAX_VEL;
@@ -47,9 +48,9 @@ void gravity (Square* hero){
 }
 
 int move_square (Square* hero, int flying){
-	if(now - old >= GRAVITY_DT - hero->vel){
+	if(now - old_g >= GRAVITY_DT - hero->vel){
 		hero->y -= 1;
-		old = SDL_GetTicks();
+		old_g = SDL_GetTicks();
 		hero->vel -= flying/40;
 		if(hero->vel < MIN_VEL)
 			hero->vel = MIN_VEL;
@@ -76,6 +77,32 @@ void change_color (Square * hero, Color * colors){
 
 	hero->x = hero->x - HERO_W/2;
 	hero->y = hero->y - HERO_L/2;
+}
+
+void move_sideways (Square * hero){
+	if(now - old_s >= SIDEWAYS_DT){
+		hero->x += side;
+		old_s = SDL_GetTicks();
+	}
+}
+
+void bouncing_walls( Square* hero, Wall * w){
+	if(w->x == 0)
+	{
+		if(hero->x <= w->x + WALL_W){
+			if(hero->c->R == w->c->R)
+				if(hero->c->G == w->c->G)
+					side = side*(-1);
+		}
+	}
+	else
+	{
+		if(hero->x + HERO_W >= w->x){
+			if(hero->c->R == w->c->R)
+				if(hero->c->G == w->c->G)
+					side = side*(-1);
+		}
+	}
 }
 
 
@@ -126,7 +153,6 @@ int main (int argc, char* args[]){
 	while(1){
 
 		now = SDL_GetTicks();
-		dt = now - old;
 
 			if(SDL_PollEvent(&e) == 1){
 				if(e.type == SDL_QUIT){
@@ -145,7 +171,7 @@ int main (int argc, char* args[]){
 				}	
 			}
 
-
+		move_sideways(&hero);
 		if(flying == 50){
 			gravity(&hero);
 			//get_out = check_ground(&hero);
@@ -155,6 +181,11 @@ int main (int argc, char* args[]){
 
 		if(hero.y + HERO_L >= SCREEN_Y)
 			hero.y = SCREEN_Y - HERO_L;
+
+		if(side > 0)
+			bouncing_walls(&hero, &w2);
+		else
+			bouncing_walls(&hero, &w1);
 
 		//RENDERIZATION
 		SDL_SetRenderDrawColor(renderer, 0x49,0x49,0x49,0x00);
