@@ -1,268 +1,176 @@
 #include <SDL2/SDL.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
-#define B_SIZE 50
-#define B_SPEED 1
-#define R_SIZE 20
-#define R_SPEED 3
-#define G_SIZE 35
-#define G_SPEED 2
-#define SCREEN_X 800
-#define SCREEN_Y 600
+#include <stdio.h>
+#define HERO_W 30
+#define HERO_L 30
+#define WALL_W 20
+#define WALL_L 480
+#define SCREEN_X 640
+#define SCREEN_Y 480
+#define GRAVITY_DT 60
+#define GRAVITY_ACC 8
+#define MIN_VEL 10
+#define MAX_VEL 57
 
-
-unsigned long now;
-unsigned long old = 0;
-unsigned long dt;
-int cont_cores = 4;
-int n_enemies=0;
+int cont_cores=1;
+unsigned long now, dt, old;
 
 typedef struct color{
-	int width;
-	int length;
-	int speed;
-	short R;
-	short G;
-	short B;
-} Color;
+	int R;
+	int G;
+	int B;
+}	Color;
 
 typedef struct square{
 	int x;
 	int y;
-	int side_x;
-	int side_y;
-	float direction[2];
-	struct color c;
-} Square;
+	float vel;
+	Color* c;
+}	Square;
 
-void creating_enemys (Square* enemy, Color* colors){
-	float theta = rand()%90;
-	int j = rand()%3;
-	enemy->x = rand()% (SCREEN_X+1-colors[j].width);
-	enemy->y = rand()% (SCREEN_Y+1-colors[j].length);
-	enemy->direction[0] = (int) (cos(theta)*100); 
-	enemy->direction[1] = (int) (sin(theta)*100);
-	enemy->side_x = rand()%2;
-	enemy->side_y = rand()%2;
+//Gravity
+void gravity (Square* hero){
 
-	enemy->c = colors[j];
-	n_enemies++;
-}
-
-void update_enemys_x (Square* enemy){
-	if(enemy->side_x == 1)
-		enemy->x += enemy->c.speed *(( (enemy->direction[0]/100) * (dt))/10);
-	else
-		enemy->x -= enemy->c.speed *(( (enemy->direction[0]/100) * (dt))/10);
-	return;	
-}
-
-void update_enemys_y (Square* enemy){
-	if(enemy->side_y == 1)
-		enemy->y += enemy->c.speed *((  (enemy->direction[1]/100) * (dt))/10);
-	else
-		enemy->y -= enemy->c.speed *((  (enemy->direction[1]/100) * (dt))/10);
-	return;	
-}
-
-void collision_with_walls (Square * enemy){
-	if(enemy->x + enemy->c.width >= SCREEN_X){
-		enemy->x = SCREEN_X - enemy->c.width;
-		enemy->side_x = 0;
-		return;
-	}
-
-	if(enemy->x <= 0){
-		enemy->x = 0;
-		enemy->side_x = 1;
-		return; 
-	}
-
-	if(enemy-> y + enemy->c.length >= SCREEN_Y){
-		enemy-> y = SCREEN_Y - enemy->c.length;
-		enemy->side_y= 0;
-		return;
-	}
-
-	if(enemy->y <= 0){
-		enemy-> y = 0;
-		enemy->side_y = 1;
-		return;
+	if(now - old >= GRAVITY_DT - hero->vel){
+		hero->y += 1;
+		old = SDL_GetTicks();
+		hero->vel += GRAVITY_ACC;
+		if(hero->vel > MAX_VEL)
+			hero->vel = MAX_VEL;
 	}
 }
 
-void collision_with_hero (Square * enemys, Square * hero){
-	int k;
-	Square aux;
+int move_square (Square* hero, int flying){
+	if(now - old >= GRAVITY_DT - hero->vel){
+		hero->y -= 1;
+		old = SDL_GetTicks();
+		hero->vel -= flying/40;
+		if(hero->vel < MIN_VEL)
+			hero->vel = MIN_VEL;
 
-	for(k=0; k<n_enemies; k++){
-		if(  (hero->x - (hero->c.width)/2) - (enemys[k].x - (enemys[k].c.width)/2) < (hero->c.width + enemys[k].c.width)/2  && ( hero->y - (hero->c.length)/2 ) - (enemys[k].y - (enemys[k].c.length)/2) < (hero->c.length + enemys[k].c.length)/2 )
-		{
-			if(hero->c.speed == enemys[k].c.speed)
-			{
-				n_enemies--;
-				aux = enemys[k];
-				enemys[k] = enemys[n_enemies];
-				enemys[n_enemies] = aux;
-			}
-			else
-			{
-				while(1);
-			}
-		}		
+		flying++;
 	}
+
+	return flying;
+}
+
+int check_ground (Square* hero){
+	if(hero->y + HERO_L >= SCREEN_Y)
+		return 1;
+	return 0;
+
 }
 
 void change_color (Square * hero, Color * colors){
 	cont_cores++;
-	hero->x = hero->x + hero->c.width/2;
-	hero->y = hero->y + hero->c.length/2;
+	hero->x = hero->x + HERO_W/2;
+	hero->y = hero->y + HERO_L/2;
 	
 	hero->c = colors[cont_cores%3];
 
-	hero->x = hero->x - hero->c.width/2;
-	hero->y = hero->y - hero->c.length/2;
+	hero->x = hero->x - HERO_W/2;
+	hero->y = hero->y - HERO_L/2;
 }
 
-int main(int argc, char* args[]){
+
+int main (int argc, char* args[]){
 
 	//INICIALIZATION
-	srand(time(NULL));
 	SDL_Init(SDL_INIT_EVERYTHING);
-	SDL_Window* window = SDL_CreateWindow("Squares", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_X,SCREEN_Y, SDL_WINDOW_SHOWN);
-	SDL_Renderer* renderer = SDL_CreateRenderer(window, 1, 0);
+	SDL_Window* window = SDL_CreateWindow("Squares", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_X, SCREEN_Y, SDL_WINDOW_SHOWN);
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_Event e;
-	SDL_Rect r;
-	int i;
-	
+	SDL_Rect draw_h;
+	int get_out = 0, flying=50;
+
 	//Declaration of Colors
 	Color blue;
-	blue.width = B_SIZE;
-	blue.length = B_SIZE;
-	blue.speed = B_SPEED;
 	blue.R = 0x00;
 	blue.G = 0x00;
 	blue.B = 0xFF;
 
 	Color red;
-	red.width = R_SIZE;
-	red.length = R_SIZE;
-	red.speed = R_SPEED;
 	red.R = 0xFF;
 	red.G = 0x00;
 	red.B = 0x00;
 
 	Color green;
-	green.width = G_SIZE;
-	green.length = G_SIZE;
-	green.speed = G_SPEED;
 	green.R = 0x00;
 	green.G = 0xFF;
 	green.B = 0x00;
 
 	Color colors[3] ={red, green, blue};
 
+	//A hero is born
+	Square hero = {300, 220, 0, &green};
+	draw_h.w = HERO_W;
+	draw_h.h = HERO_L;
 
-	//Declaration of the hero
-	Square hero;
-	hero.x = 320; 
-	hero.y = 240; 
-	hero.c = green; // as green is the all-around color, it's set as the default color
-
-	//Declaration of enemys
-	Square enemy1, enemy2, enemy3, enemy4, enemy5;
-	Square enemys[5]  = {enemy1, enemy2, enemy3, enemy4, enemy5};
-	for(i=0; i<5; i++){
-		creating_enemys( &enemys[i], colors);
-	}
-
-
-	
-
+	SDL_SetRenderDrawColor(renderer, 0x49,0x49,0x49,0x00);
+	SDL_RenderFillRect(renderer, NULL);
+	SDL_SetRenderDrawColor(renderer, hero.c->R, hero.c->G, hero.c->B, 0x00);
+	draw_h.x =hero.x;
+	draw_h.y =hero.y;
+	SDL_RenderFillRect(renderer, &draw_h);
+	SDL_RenderPresent(renderer);
 
 	//EXECUTION
+
 	while(1){
 
 		now = SDL_GetTicks();
 		dt = now - old;
 
-		if(SDL_PollEvent(&e) == 1){
-			if(e.type == SDL_QUIT)
-				break;
-			else if( e.type == SDL_KEYDOWN){
-				switch (e.key.keysym.sym){
+			if(SDL_PollEvent(&e) == 1){
+				if(e.type == SDL_QUIT){
+					get_out = 1;
+					break;
+				}
+				else if( e.type == SDL_KEYDOWN){
+					switch (e.key.keysym.sym){
 					case SDLK_UP:
-						hero.y -= ((hero.c.speed * dt)/10);
+						flying = 0;
 						break;
-
-					case SDLK_DOWN:
-						hero.y += ((hero.c.speed * dt)/10);
-						break;
-
-					case SDLK_LEFT:
-						hero.x -= ((hero.c.speed * dt)/10);
-						break;
-
-					case SDLK_RIGHT:
-						hero.x += ((hero.c.speed * dt)/10);
-						break;
-
 					case SDLK_SPACE:
 						change_color(&hero, colors);
 						break;
-
-
-				}
+					}
+				}	
 			}
-			
-		}
 
-		for(i=0; i<n_enemies; i++){
-			update_enemys_x(&enemys[i]);
-			update_enemys_y(&enemys[i]);
-		}
-		old = SDL_GetTicks();
 
-		for(i=0; i<5; i++){
-			collision_with_walls(&enemys[i]);
+		if(flying == 50){
+			gravity(&hero);
+			//get_out = check_ground(&hero);
 		}
-			collision_with_hero(enemys, &hero);
+		else
+			flying = move_square(&hero, flying);
 
-	//RENDERIZATION
-		SDL_SetRenderDrawColor(renderer, 0x00,0x00,0x00,0x00);
+		if(hero.y + HERO_L >= SCREEN_Y)
+			hero.y = SCREEN_Y - HERO_L;
+
+		//RENDERIZATION
+		SDL_SetRenderDrawColor(renderer, 0x49,0x49,0x49,0x00);
 		SDL_RenderFillRect(renderer, NULL);
 
-		for(i=0; i<n_enemies; i++){
-			SDL_SetRenderDrawColor(renderer, enemys[i].c.R,enemys[i].c.G,enemys[i].c.B,0x00);
-			r.x=enemys[i].x;
-			r.y=enemys[i].y;
-			r.w=enemys[i].c.width;
-			r.h=enemys[i].c.length;
-			SDL_RenderFillRect(renderer, &r);
-		}
-
-		SDL_SetRenderDrawColor(renderer, hero.c.R, hero.c.G, hero.c.B, 0x00);
-		r.x=hero.x;
-		r.y=hero.y;
-		r.w=hero.c.width;
-		r.h=hero.c.length;
-		SDL_RenderFillRect(renderer, &r);
-
-		SDL_SetRenderDrawColor(renderer, hero.c.R, hero.c.G, hero.c.B, 0x00);
-		r.x=hero.x+5;
-		r.y=hero.y+5;
-		r.w=hero.c.width-5;
-		r.h=hero.c.length-5;
-		SDL_RenderFillRect(renderer, &r);
+		//Drawing the hero
+		SDL_SetRenderDrawColor(renderer, hero.c->R, hero.c->G, hero.c->B, 0x00);
+		draw_h.x =hero.x;
+		draw_h.y =hero.y;
+		SDL_RenderFillRect(renderer, &draw_h);
 
 		SDL_RenderPresent(renderer);
+
+		if(get_out){
+			SDL_DestroyRenderer(renderer);
+			SDL_DestroyWindow(window);
+			SDL_Quit();
+			exit(0);
+		}
 	}
-
 	//FINALIZATION
-		SDL_DestroyRenderer(renderer);
-		SDL_DestroyWindow(window);
-		SDL_Quit();
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	SDL_Quit();
 
-		return 0;
+	return 0;
 }
