@@ -6,19 +6,26 @@
 #define WALL_L 480
 #define SCREEN_X 640
 #define SCREEN_Y 480
-#define GRAVITY_DT 60
+#define GRAVITY_DT 62
 #define GRAVITY_ACC 8
 #define MIN_VEL 10
 #define MAX_VEL 57
 
 int cont_cores=1;
-unsigned long now, dt, old;
+unsigned long now, dt, old=0;
 
 typedef struct color{
 	int R;
 	int G;
 	int B;
 }	Color;
+
+typedef struct wall{
+	int x;
+	int y;
+	Color* c;
+}	Wall;
+
 
 typedef struct square{
 	int x;
@@ -65,11 +72,13 @@ void change_color (Square * hero, Color * colors){
 	hero->x = hero->x + HERO_W/2;
 	hero->y = hero->y + HERO_L/2;
 	
-	hero->c = colors[cont_cores%3];
+	hero->c = &colors[cont_cores%3];
 
 	hero->x = hero->x - HERO_W/2;
 	hero->y = hero->y - HERO_L/2;
 }
+
+
 
 
 int main (int argc, char* args[]){
@@ -79,7 +88,7 @@ int main (int argc, char* args[]){
 	SDL_Window* window = SDL_CreateWindow("Squares", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_X, SCREEN_Y, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_Event e;
-	SDL_Rect draw_h;
+	SDL_Rect draw_hero, draw_wall;
 	int get_out = 0, flying=50;
 
 	//Declaration of Colors
@@ -102,16 +111,15 @@ int main (int argc, char* args[]){
 
 	//A hero is born
 	Square hero = {300, 220, 0, &green};
-	draw_h.w = HERO_W;
-	draw_h.h = HERO_L;
+	draw_hero.w = HERO_W;
+	draw_hero.h = HERO_L;
 
-	SDL_SetRenderDrawColor(renderer, 0x49,0x49,0x49,0x00);
-	SDL_RenderFillRect(renderer, NULL);
-	SDL_SetRenderDrawColor(renderer, hero.c->R, hero.c->G, hero.c->B, 0x00);
-	draw_h.x =hero.x;
-	draw_h.y =hero.y;
-	SDL_RenderFillRect(renderer, &draw_h);
-	SDL_RenderPresent(renderer);
+	//The walls are built
+	Wall w1 = {0,0,&green};
+	Wall w2 = {SCREEN_X - WALL_W, 0, &green};
+	draw_wall.w = WALL_W;
+	draw_wall.h = WALL_L;
+
 
 	//EXECUTION
 
@@ -154,11 +162,21 @@ int main (int argc, char* args[]){
 
 		//Drawing the hero
 		SDL_SetRenderDrawColor(renderer, hero.c->R, hero.c->G, hero.c->B, 0x00);
-		draw_h.x =hero.x;
-		draw_h.y =hero.y;
-		SDL_RenderFillRect(renderer, &draw_h);
+		draw_hero.x =hero.x;
+		draw_hero.y =hero.y;
+		SDL_RenderFillRect(renderer, &draw_hero);
+
+		//Drawing the Walls
+		SDL_SetRenderDrawColor(renderer, w1.c->R, w1.c->G, w1.c->B, 0x00);
+		draw_wall.x = w1.x;
+		draw_wall.y = w1.y;
+		SDL_RenderFillRect(renderer, &draw_wall);
+		draw_wall.x = w2.x;
+		draw_wall.y = w2.y;
+		SDL_RenderFillRect(renderer, &draw_wall);
 
 		SDL_RenderPresent(renderer);
+	
 
 		if(get_out){
 			SDL_DestroyRenderer(renderer);
