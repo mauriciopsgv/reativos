@@ -335,7 +335,7 @@ int main (int argc, char* args[]){
 	//INICIALIZATION
 	srand(time(NULL));
 	SDL_Init(SDL_INIT_EVERYTHING);
-	SDL_Window* window = SDL_CreateWindow("Squares", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_X, SCREEN_Y, SDL_WINDOW_SHOWN);
+	SDL_Window* window = SDL_CreateWindow("Evil Spikes", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_X, SCREEN_Y, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_Event e;
 	SDL_Rect draw_hero, draw_wall;
