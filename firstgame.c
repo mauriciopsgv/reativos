@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
-#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #define HERO_W 30
 #define HERO_L 30
 #define WALL_W 20
@@ -10,7 +11,7 @@
 #define GRAVITY_ACC 8
 #define MIN_VEL 10
 #define MAX_VEL 57
-#define SIDEWAYS_DT 10
+#define SIDEWAYS_DT 3
 
 int cont_cores=1, side=1;
 unsigned long now, old_s=0, old_g=0;
@@ -22,8 +23,8 @@ typedef struct color{
 }	Color;
 
 typedef struct wall{
-	int x;
-	int y;
+	int x[2];
+	int y[2];
 	Color* c;
 }	Wall;
 
@@ -68,6 +69,12 @@ int check_ground (Square* hero){
 
 }
 
+void change_wall_color ( Wall *w, Color * colors)
+{
+	int color_index = rand()%3;
+	w->c = &colors[color_index];
+}
+
 void change_color (Square * hero, Color * colors){
 	cont_cores++;
 	hero->x = hero->x + HERO_W/2;
@@ -86,37 +93,57 @@ void move_sideways (Square * hero){
 	}
 }
 
-void bouncing_walls( Square* hero, Wall * w){
-	if(w->x == 0)
-	{
-		if(hero->x <= w->x + WALL_W){
-			if(hero->c->R == w->c->R)
-				if(hero->c->G == w->c->G)
+int bouncing_walls( Square* hero, Wall * w, Color * colors){
+	if(side == 1){
+		if(hero->x + HERO_W >= w->x[1]){
+			if(hero->c->R == w->c->R){
+				if(hero->c->G == w->c->G){
 					side = side*(-1);
+					change_wall_color(w, colors);
+				}
+				else
+					return 1;
+			}
+			else
+				return 1;
 		}
 	}
-	else
-	{
-		if(hero->x + HERO_W >= w->x){
-			if(hero->c->R == w->c->R)
-				if(hero->c->G == w->c->G)
+	else{
+		if(hero->x <= w->x[0] + WALL_W){
+			if(hero->c->R == w->c->R){
+				if(hero->c->G == w->c->G){
 					side = side*(-1);
+					change_wall_color(w, colors);
+				}
+				else
+					return 1;	
+			}
+			else
+				return 1;
 		}
 	}
+
+	return 0;
 }
 
-
+void finalization_error (SDL_Renderer* renderer, SDL_Window* window){
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	SDL_Quit();
+	exit(0);
+}
 
 
 int main (int argc, char* args[]){
 
 	//INICIALIZATION
+	srand(time(NULL));
 	SDL_Init(SDL_INIT_EVERYTHING);
 	SDL_Window* window = SDL_CreateWindow("Squares", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_X, SCREEN_Y, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_Event e;
 	SDL_Rect draw_hero, draw_wall;
-	int get_out = 0, flying=50;
+	int i,get_out_g = 0, get_out_w=0, flying=50;
 
 	//Declaration of Colors
 	Color blue;
@@ -142,8 +169,7 @@ int main (int argc, char* args[]){
 	draw_hero.h = HERO_L;
 
 	//The walls are built
-	Wall w1 = {0,0,&green};
-	Wall w2 = {SCREEN_X - WALL_W, 0, &green};
+	Wall w = {{0, SCREEN_X - WALL_W}, {0,0}, &green};
 	draw_wall.w = WALL_W;
 	draw_wall.h = WALL_L;
 
@@ -156,7 +182,7 @@ int main (int argc, char* args[]){
 
 			if(SDL_PollEvent(&e) == 1){
 				if(e.type == SDL_QUIT){
-					get_out = 1;
+					finalization_error(renderer,window);
 					break;
 				}
 				else if( e.type == SDL_KEYDOWN){
@@ -174,18 +200,13 @@ int main (int argc, char* args[]){
 		move_sideways(&hero);
 		if(flying == 50){
 			gravity(&hero);
-			//get_out = check_ground(&hero);
+			get_out_g = check_ground(&hero);
 		}
 		else
 			flying = move_square(&hero, flying);
 
-		if(hero.y + HERO_L >= SCREEN_Y)
-			hero.y = SCREEN_Y - HERO_L;
+		get_out_w = bouncing_walls(&hero, &w, colors);
 
-		if(side > 0)
-			bouncing_walls(&hero, &w2);
-		else
-			bouncing_walls(&hero, &w1);
 
 		//RENDERIZATION
 		SDL_SetRenderDrawColor(renderer, 0x49,0x49,0x49,0x00);
@@ -198,22 +219,20 @@ int main (int argc, char* args[]){
 		SDL_RenderFillRect(renderer, &draw_hero);
 
 		//Drawing the Walls
-		SDL_SetRenderDrawColor(renderer, w1.c->R, w1.c->G, w1.c->B, 0x00);
-		draw_wall.x = w1.x;
-		draw_wall.y = w1.y;
-		SDL_RenderFillRect(renderer, &draw_wall);
-		draw_wall.x = w2.x;
-		draw_wall.y = w2.y;
-		SDL_RenderFillRect(renderer, &draw_wall);
+		SDL_SetRenderDrawColor(renderer, w.c->R, w.c->G, w.c->B, 0x00);
+		for (i=0; i<2; i++)
+		{
+			draw_wall.x = w.x[i];
+			draw_wall.y = w.y[i];
+			SDL_RenderFillRect(renderer, &draw_wall);
+		}
 
 		SDL_RenderPresent(renderer);
 	
 
-		if(get_out){
-			SDL_DestroyRenderer(renderer);
-			SDL_DestroyWindow(window);
-			SDL_Quit();
-			exit(0);
+		if(get_out_g || get_out_w){
+
+			finalization_error(renderer,window);
 		}
 	}
 	//FINALIZATION
