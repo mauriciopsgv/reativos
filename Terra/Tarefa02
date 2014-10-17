@@ -46,8 +46,8 @@ with
 		loop do				
 			if (qSize() > 0) then
 				stat = qGet(mensagem);
-				emit SEND(mensagem);
-				await SEND_DONE();		
+				emit SEND_ACK(mensagem);
+				await SEND_DONE_ACK();		
 			else
 				break;
 			end
