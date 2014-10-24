@@ -1,0 +1,135 @@
+#include "/home/terra/TerraNet_v0.1/terra/TerraNet.defs"
+
+var ushort nodeId = getNodeId();
+
+pktype usrMsg from radioMsg with
+	var ubyte[4] d8;
+	var ushort[4] d16;
+	var ulong[2] d32;
+end
+
+var ubyte distancia=0;
+var ushort stat, pai=0;
+var usrMsg	mensagem;
+
+
+par/or do
+
+	if(nodeId == 11) then
+		pai = 1;
+		mensagem.source = nodeId;
+		mensagem.target = BROADCAST;
+		mensagem.d8[0] = distancia;
+		emit SEND(mensagem);
+		await SEND_DONE();
+	else
+		await 2s;
+	end
+
+with
+	mensagem = await RECEIVE;
+	if( pai == 0 ) then
+			pai = mensagem.source;
+			distancia = mensagem.d8[0] + 1;
+			mensagem.d8[0] = distancia;
+			mensagem.source = nodeId;
+			loop do						
+				emit SEND(mensagem);
+				await SEND_DONE();
+			end	
+	end	
+with
+	await 1s;
+end
+
+/*	Código usado para testar se todos os nós tem pai
+par do
+	loop do
+		mensagem.source = nodeId;
+		mensagem.target = pai;
+		mensagem.d16[0] = nodeId;
+		mensagem.d16[1] = pai;
+
+
+		stat = qPut(mensagem);
+		await 10s;
+	end
+with
+	loop do
+		mensagem = await RECEIVE;
+		mensagem.source = nodeId;
+		mensagem.target = pai;
+		
+		stat = qPut(mensagem);
+	end
+with
+	loop do
+		await Q_READY;
+		
+		loop do
+			if (qSize() > 0) then
+				stat = qGet(mensagem);
+				emit SEND_ACK(mensagem);
+				await SEND_DONE_ACK();
+			else		
+				break;
+			end
+		end
+	end
+end
+*/
+
+
+par/or do
+
+	par do
+			emit REQ_TEMP();
+			mensagem.d16[0] = await TEMP();
+			mensagem.source = nodeId;
+			mensagem.d16[1] = nodeId;
+			
+			if(nodeId == 11) then
+				mensagem.target = 1;
+			else
+				mensagem.target = pai;
+			end
+			
+			await (2*distancia)s;
+			
+			if(distancia > 8) then
+				await ((nodeId%10)/3) s;		
+			end
+
+			stat = qPut(mensagem);
+	with
+		loop do
+			mensagem = await RECEIVE;
+			mensagem.source = nodeId;
+
+			if( nodeId == 11) then
+				mensagem.target = 1;
+			else
+				mensagem.target = pai;
+			end
+	
+			stat = qPut(mensagem);
+		end
+	with	
+		loop do
+			await Q_READY;
+	
+			loop do
+				if(qSize() > 0) then
+					stat = qGet(mensagem);
+					emit SEND_ACK(mensagem);
+					await SEND_DONE_ACK();
+				else
+					break;
+				end
+			end
+		end
+	end
+
+with
+	await 45s;
+end	
