@@ -75,7 +75,7 @@ loop do
 					stat = qPut(mensagem);
 				end	
 			with
-				await 30s;
+				await 50s; /* await 30s;*/
 			end
 		with
 			par/or do	
@@ -93,10 +93,10 @@ loop do
 					end	
 				end
 			with
-				await 30s;
+				await 50s; /* await 30s;*/
 			end		
 		end
 	with
-		await 50s;  /*await 30s;*/
+		await 50s;  /* await 30s;*/
 	end	
 end
