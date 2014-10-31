@@ -53,7 +53,7 @@ loop do
 				mensagem.target = pai;				
 				mensagem.d16[1] = nodeId;
 				
-				await (distancia)s;
+				await (2*distancia)s;  /*await (2*distancia)s;*/
 	
 				if(distancia > 8) then
 					await (nodeId%10)s;		
@@ -97,6 +97,6 @@ loop do
 			end		
 		end
 	with
-		await 30s;
+		await 50s;  /*await 30s;*/
 	end	
 end
