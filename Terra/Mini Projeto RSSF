@@ -13,123 +13,90 @@ var ushort stat, pai=0;
 var usrMsg	mensagem;
 
 
-par/or do
+par/and do
 
 	if(nodeId == 11) then
 		pai = 1;
+		mensagem.type = 1; 
 		mensagem.source = nodeId;
 		mensagem.target = BROADCAST;
 		mensagem.d8[0] = distancia;
 		emit SEND(mensagem);
 		await SEND_DONE();
-	else
+	end
+
+with
+	par/or do
+		mensagem = await RECEIVE(1);
+		if( pai == 0 ) then
+				pai = mensagem.source;
+				distancia = mensagem.d8[0] + 1;
+				mensagem.d8[0] = distancia;
+				mensagem.source = nodeId;
+		
+				emit SEND(mensagem);
+				await SEND_DONE();	
+		end
+	with
 		await 2s;
 	end
-
-with
-	mensagem = await RECEIVE;
-	if( pai == 0 ) then
-			pai = mensagem.source;
-			distancia = mensagem.d8[0] + 1;
-			mensagem.d8[0] = distancia;
-			mensagem.source = nodeId;
-			loop do						
-				emit SEND(mensagem);
-				await SEND_DONE();
-			end	
-	end	
-with
-	await 1s;
 end
 
-/*	Código usado para testar se todos os nós tem pai
-par do
-	loop do
-		mensagem.source = nodeId;
-		mensagem.target = pai;
-		mensagem.d16[0] = nodeId;
-		mensagem.d16[1] = pai;
 
-
-		stat = qPut(mensagem);
-		await 10s;
-	end
-with
-	loop do
-		mensagem = await RECEIVE;
-		mensagem.source = nodeId;
-		mensagem.target = pai;
-		
-		stat = qPut(mensagem);
-	end
-with
-	loop do
-		await Q_READY;
-		
-		loop do
-			if (qSize() > 0) then
-				stat = qGet(mensagem);
-				emit SEND_ACK(mensagem);
-				await SEND_DONE_ACK();
-			else		
-				break;
-			end
-		end
-	end
-end
-*/
-
-
-par/or do
-
-	par do
-			emit REQ_TEMP();
-			mensagem.d16[0] = await TEMP();
-			mensagem.source = nodeId;
-			mensagem.d16[1] = nodeId;
-			
-			if(nodeId == 11) then
-				mensagem.target = 1;
-			else
-				mensagem.target = pai;
-			end
-			
-			await (2*distancia)s;
-			
-			if(distancia > 8) then
-				await ((nodeId%10)/3) s;		
-			end
-
-			stat = qPut(mensagem);
-	with
-		loop do
-			mensagem = await RECEIVE;
-			mensagem.source = nodeId;
-
-			if( nodeId == 11) then
-				mensagem.target = 1;
-			else
-				mensagem.target = pai;
-			end
+loop do
+	par/or do
+		par/and do
+				emit REQ_TEMP();
+				mensagem.d16[0] = await TEMP();
+				mensagem.type = 2;			
+				mensagem.source = nodeId;
+				mensagem.target = pai;				
+				mensagem.d16[1] = nodeId;
+				
+				await (distancia)s;
 	
-			stat = qPut(mensagem);
-		end
-	with	
-		loop do
-			await Q_READY;
-	
-			loop do
-				if(qSize() > 0) then
-					stat = qGet(mensagem);
-					emit SEND_ACK(mensagem);
-					await SEND_DONE_ACK();
-				else
-					break;
+				if(distancia > 8) then
+					await (nodeId%10)s;		
 				end
+	
+				stat = qPut(mensagem);
+		with
+			par/or do
+				loop do
+					mensagem = await RECEIVE(2);
+					mensagem.source = nodeId;
+		
+					if( nodeId == 11) then
+						mensagem.target = 1;
+					else
+						mensagem.target = pai;
+					end
+			
+					stat = qPut(mensagem);
+				end	
+			with
+				await 30s;
 			end
+		with
+			par/or do	
+				loop do
+					await Q_READY;
+		
+					loop do
+						if(qSize() > 0) then
+							stat = qGet(mensagem);
+							emit SEND_ACK(mensagem);
+							await SEND_DONE_ACK(2);
+						else
+							break;
+						end
+					end	
+				end
+			with
+				await 30s;
+			end		
 		end
-	end
-
-with
-	await 45s;
-end	
+	with
+		await 30s;
+	end	
+end
