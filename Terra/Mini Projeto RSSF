@@ -53,7 +53,7 @@ loop do
 				mensagem.target = pai;				
 				mensagem.d16[1] = nodeId;
 				
-				await (2*distancia)s;  /*await (2*distancia)s;*/
+				await (2*distancia)s;  /*await (distancia)s;*/
 	
 				if(distancia > 8) then
 					await (nodeId%10)s;		
